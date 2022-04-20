@@ -1,0 +1,100 @@
+const initialWagonState = {
+  supplies: 100,
+  distance: 0,
+  days: 0,
+  cash: 200
+}
+
+
+const stateReducer = (state = initialWagonState, action) => {
+  switch(action.type) {
+
+    case 'gather': {
+      return {
+        ...state,
+        supplies: state.supplies + 15,
+        days: state.days + 1
+      }
+    };
+
+    case 'travel': {
+      if(state.supplies - ( 20 * action.payload) <= 0) {
+        return state;
+      }
+      else {
+        return {
+          ...state,
+          supplies: state.supplies - (20 * action.payload),
+          distance: state.distance + (10 * action.payload),
+          days: state.days + action.payload
+        }
+      }
+    };
+
+    case 'tippedWagon': {
+      return {
+        ...state,
+        supplies: state.supplies - 30,
+        days: state.days + 1
+      }
+    };
+
+// EXTRA CASES
+    case 'sell': {
+      return {
+        ...state, 
+        supplies: state.supplies - 20,
+        cash: state.cash + 5
+      }
+    };
+
+    case 'buy': {
+      return {
+        ...state,
+        supplies: state.supplies + 25,
+        cash: state.cash - 15
+      }
+    };
+
+    case 'theft': {
+      return {
+        ...state,
+        cash: state.cash / 2
+      }
+    }
+
+    default: {
+      return state;
+    } 
+  }
+}
+
+//INITIAL STATE
+let wagon = stateReducer(undefined,{})
+console.log('INITIAL STATE: ', JSON.stringify(wagon))
+
+//DAY 1
+console.log('DAY 1: ',
+JSON.stringify(wagon = stateReducer(wagon, {type: 'travel', payload: 1})));
+
+//DAY 2
+console.log('DAY 2: ',
+JSON.stringify(wagon = stateReducer(wagon, {type: 'gather', payload: null})));
+
+//DAY 3
+console.log('DAY 3: ', 
+JSON.stringify(wagon = stateReducer(wagon, {type:'tippedWagon', payload: null})));
+
+//NEXT THREE DAYS
+console.log('DAY 4,5 and 6: ',
+JSON.stringify(wagon = stateReducer(wagon, {type: 'travel', payload: 3})));
+
+//EXTRA CASES
+console.log('SUPPLIES SELL: ',
+JSON.stringify(wagon = stateReducer(wagon, {type: 'sell', payload: null})));
+
+console.log('BUY SUPPLIES: ',
+JSON.stringify(wagon = stateReducer(wagon, {type: 'buy', payload: 2})));
+
+console.log('THEFT: ',
+JSON.stringify(wagon = stateReducer(wagon, {type: 'theft', payload: null})));
